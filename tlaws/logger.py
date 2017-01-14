@@ -2,16 +2,18 @@
 import  os, time
 import threading
 import subprocess
-import config
+from . import config
 
 class TlawsLogger(threading.Thread):
 
     def __init__(self, app):
         threading.Thread.__init__(self)
-        print "[+] Starting logger"
+        print("[+] Starting logger module", flush=True)
 
         self.app = app
         self.running = True
+
+        self.ts = time.time()
 
     def fetch_temp(self):
         self.temp =  float(subprocess.Popen([config.temp_file_path],
@@ -26,8 +28,10 @@ class TlawsLogger(threading.Thread):
 
     def run(self):
         while self.running:
-            temp = self.fetch_temp()
-            self.log()
-            time.sleep(5)
-        print "[-] Stopping logger"
+            if time.time() - self.ts > 5:
+                temp = self.fetch_temp()
+                self.log()
+                self.ts = time.time()
+            time.sleep(1)
+        print("[-] Stopping logger module", flush=True)
 

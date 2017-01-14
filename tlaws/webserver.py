@@ -1,8 +1,8 @@
 
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from SocketServer import ThreadingMixIn
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from socketserver import ThreadingMixIn
 import threading
-import config
+from . import config
 
 class MyHTTPServer(HTTPServer,ThreadingMixIn):
     pass
@@ -15,13 +15,13 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'image/png')
             self.end_headers()
-            self.wfile.write(open(config.graphs_file_path,'r').read())
+            self.wfile.write(open(config.graphs_file_path,'rb').read())
 
         elif self.path == '/':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            self.wfile.write("""<html>
+            message = ("""<html>
                 <body>
                     <h1>
                         hi xxx !
@@ -29,6 +29,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
                     <img src="loutre.png"/>
                 </body>
             </html>""")
+            self.wfile.write(message.encode())
 
         else:
             self.send_response(404)
@@ -36,10 +37,11 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 
 
 class TlawsWebServer(threading.Thread):
+    daemon = True
 
     def __init__(self, app):
         threading.Thread.__init__(self)
-        print "[+] Starting webserver"
+        print("[+] Starting webserver", flush=True)
         self.app = app
 
         self.running = True
@@ -49,7 +51,6 @@ class TlawsWebServer(threading.Thread):
 
     def run(self):
         if self.running:
-            print 'running'
-            httpd = MyHTTPServer( ('',config.port), MyRequestHandler)
+            httpd = MyHTTPServer(('', config.port), MyRequestHandler)
             httpd.serve_forever()
-        print "[-] Stopping webserver"
+        print("[-] Stopping webserver", flush=True)
