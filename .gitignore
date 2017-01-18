@@ -1,0 +1,4 @@
+*.rrd
+*.png
+*.pyc
+www/src/*

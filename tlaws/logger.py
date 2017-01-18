@@ -13,6 +13,8 @@ class TlawsLogger(threading.Thread):
         self.app = app
         self.running = True
 
+        self.temp = None
+
         self.ts = time.time()
 
     def fetch_temp(self):
