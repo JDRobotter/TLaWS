@@ -1,4 +1,6 @@
 *.rrd
 *.png
 *.pyc
-www/src/*
+*.swp
+.vimlist
+www/src/components/*

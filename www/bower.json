@@ -16,5 +16,8 @@
     "angular-material": "^1.1.1",
     "angular-ui-router": "^0.3.2",
     "material-design-icons": "^3.0.1"
+  },
+  "dependencies": {
+    "angular-nvd3": "^1.0.9"
   }
 }
